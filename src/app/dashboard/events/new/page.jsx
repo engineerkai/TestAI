@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default function NewEventPage () {
   const user = getUserFromRequest()
+  console.log(user)
   if (!user) redirect('/dashboard/login')
   return (
     <div className="container py-4" style={{maxWidth:720}}>
@@ -31,6 +32,7 @@ export default function NewEventPage () {
 async function createEvent (formData) {
   'use server'
   const user = getUserFromRequest()
+  console.log(user)
   if (!user) redirect('/dashboard/login')
   // Ensure the user referenced by the token actually exists to satisfy FK constraint
   const dbUser = await get('SELECT id FROM users WHERE id = ?', [user.id])

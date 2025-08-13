@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { all, get } from '@/src/lib/db'
+import { all, get } from '@/lib/db'
 import { redirect } from 'next/navigation'
-import { getUserFromRequest } from '@/src/lib/auth'
+import { getUserFromRequest } from '@/lib/auth'
 
 export default async function EventDetail ({ params }) {
   const user = getUserFromRequest()
@@ -16,6 +16,9 @@ export default async function EventDetail ({ params }) {
     [event.id]
   )
   const base = process.env.NEXT_PUBLIC_BASE_URL
+  const signInHref = base ? `${base}/s/${event.qr_token}` : `/s/${event.qr_token}`
+  const qrPngHref = base ? `${base}/api/qr/${event.qr_token}/png` : `/api/qr/${event.qr_token}/png`
+  const qrPdfHref = base ? `${base}/api/qr/${event.qr_token}/pdf` : `/api/qr/${event.qr_token}/pdf`
   return (
     <div className="container py-4" style={{maxWidth:960}}>
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -24,9 +27,10 @@ export default async function EventDetail ({ params }) {
           {event.address && <div className="text-muted">{event.address}</div>}
         </div>
         <div className="d-flex gap-2">
-          <a className="btn btn-outline-secondary" href={`${base}/api/qr/${event.qr_token}/png`} target="_blank">QR PNG</a>
-          <a className="btn btn-outline-secondary" href={`${base}/api/qr/${event.qr_token}/pdf`} target="_blank">QR PDF</a>
-          <a className="btn btn-primary" href={`${base}/s/${event.qr_token}`} target="_blank">Open Sign-In</a>
+          <a className="btn btn-outline-secondary" href={qrPngHref} target="_blank">QR PNG</a>
+          <a className="btn btn-outline-secondary" href={qrPdfHref} target="_blank">QR PDF</a>
+          <a className="btn btn-primary" href={signInHref} target="_blank">Open Sign-In</a>
+          <a className="btn btn-outline-primary" href={`/dashboard/events/${event.id}/questions`}>Customize Questions</a>
         </div>
       </div>
       <div className="card">

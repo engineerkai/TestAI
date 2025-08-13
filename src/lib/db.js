@@ -59,6 +59,8 @@ export async function ensureDb () {
       FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
     );
   `)
+  // Attempt to add new column for customizable sign-in form schema
+  try { await run(`ALTER TABLE events ADD COLUMN form_schema TEXT;`) } catch (_) {}
   await run(`
     CREATE TABLE IF NOT EXISTS visitors (
       id TEXT PRIMARY KEY,
@@ -84,6 +86,8 @@ export async function ensureDb () {
       FOREIGN KEY (visitor_id) REFERENCES visitors(id) ON DELETE CASCADE
     );
   `)
+  // Attempt to add column to store extra answers for custom questions
+  try { await run(`ALTER TABLE signins ADD COLUMN extra_answers TEXT;`) } catch (_) {}
   await run(`
     CREATE TABLE IF NOT EXISTS messages (
       id TEXT PRIMARY KEY,

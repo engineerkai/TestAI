@@ -8,7 +8,8 @@ export async function POST (req, { params }) {
   await ensureDb()
   const event = await get('SELECT * FROM events WHERE qr_token = ?', [params.token])
   if (!event) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
-  const { name, email, phone, budget, timeline, preapproved, neighborhoods, consent } = await req.json()
+  const body = await req.json()
+  const { name, email, phone, budget, timeline, preapproved, neighborhoods, consent } = body
   if (!name || !email || !phone) return NextResponse.json({ error: 'required fields missing' }, { status: 400 })
 
   let visitor = await get('SELECT * FROM visitors WHERE email = ? AND phone = ?', [email, phone])
@@ -22,8 +23,11 @@ export async function POST (req, { params }) {
   }
 
   const score = scoreLead({ budget, timeline, preapproved: !!preapproved, consent: !!consent })
+  // Capture any additional dynamic answers beyond the known fields
+  const known = new Set(['name','email','phone','budget','timeline','preapproved','neighborhoods','consent'])
+  const extra = Object.fromEntries(Object.entries(body).filter(([k]) => !known.has(k)))
   const sid = uuidv4()
-  await run('INSERT INTO signins (id, event_id, visitor_id, score) VALUES (?, ?, ?, ?)', [sid, event.id, visitor.id, score])
+  await run('INSERT INTO signins (id, event_id, visitor_id, score, extra_answers) VALUES (?, ?, ?, ?, ?)', [sid, event.id, visitor.id, score, Object.keys(extra).length ? JSON.stringify(extra) : null])
 
   const title = 'Thanks for visiting!'
   const address = event.address || ''

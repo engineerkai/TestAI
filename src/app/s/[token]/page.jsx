@@ -1,6 +1,8 @@
 "use client"
 import { useEffect, useState } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export default function SignInPage ({ params }) {
   const [event, setEvent] = useState(null)
   const [error, setError] = useState('')
@@ -84,6 +86,39 @@ export default function SignInPage ({ params }) {
                 <label className="form-label">Preferred neighborhoods (optional)</label>
                 <input name="neighborhoods" className="form-control" placeholder="e.g., Downtown, Lakeview" />
               </div>
+              {event?.formSchema?.length ? (
+                <>
+                  <h3 className="h6 text-uppercase text-muted mt-4">Additional Questions</h3>
+                  {event.formSchema.map((f, i) => (
+                    <div className="mb-3" key={i}>
+                      {f.type !== 'checkbox' && (
+                        <label className="form-label">{f.label || f.name}{f.required ? ' *' : ''}</label>
+                      )}
+                      {f.type === 'select' ? (
+                        <select name={f.name} className="form-select" required={!!f.required}>
+                          <option value="">Select...</option>
+                          {(f.options || []).map((opt, idx) => (
+                            <option key={idx} value={opt.value ?? opt}>{opt.label ?? opt}</option>
+                          ))}
+                        </select>
+                      ) : f.type === 'checkbox' ? (
+                        <div className="form-check">
+                          <input type="checkbox" className="form-check-input" id={`q_${i}`} name={f.name} value="1" />
+                          <label className="form-check-label" htmlFor={`q_${i}`}>{f.label || f.name}</label>
+                        </div>
+                      ) : (
+                        <input
+                          type={f.type || 'text'}
+                          name={f.name}
+                          className="form-control"
+                          required={!!f.required}
+                          placeholder={f.placeholder || ''}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </>
+              ) : null}
               <div className="mb-3 form-check">
                 <input type="checkbox" className="form-check-input" id="consent" name="consent" value="1" required />
                 <label className="form-check-label" htmlFor="consent">I consent to be contacted about this property and related listings.</label>
