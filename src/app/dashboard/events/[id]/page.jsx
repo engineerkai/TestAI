@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ArrowTopRightOnSquareIcon, PencilSquareIcon, QrCodeIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline'
 import { all, get } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { getUserFromRequest } from '@/lib/auth'
@@ -27,10 +28,18 @@ export default async function EventDetail ({ params }) {
           {event.address && <div className="text-gray-500">{event.address}</div>}
         </div>
         <div className="flex flex-wrap gap-2">
-          <a className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" href={qrPngHref} target="_blank">QR PNG</a>
-          <a className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" href={qrPdfHref} target="_blank">QR PDF</a>
-          <a className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" href={signInHref} target="_blank">Open Sign-In</a>
-          <a className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 px-4 rounded-lg shadow transition" href={`/dashboard/events/${event.id}/questions`}>Customize Questions</a>
+          <a className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition-transform duration-200 hover:scale-105" href={qrPngHref} target="_blank">
+            <QrCodeIcon className="h-5 w-5" /> QR PNG
+          </a>
+          <a className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition-transform duration-200 hover:scale-105" href={qrPdfHref} target="_blank">
+            <DocumentArrowDownIcon className="h-5 w-5" /> QR PDF
+          </a>
+          <a className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition-transform duration-200 hover:scale-105" href={signInHref} target="_blank">
+            <ArrowTopRightOnSquareIcon className="h-5 w-5" /> Open Sign-In
+          </a>
+          <a className="flex items-center gap-2 bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 px-4 rounded-lg shadow transition-transform duration-200 hover:scale-105" href={`/dashboard/events/${event.id}/questions`}>
+            <PencilSquareIcon className="h-5 w-5" /> Customize Questions
+          </a>
         </div>
       </div>
       <div className="bg-white rounded-xl shadow p-6">
