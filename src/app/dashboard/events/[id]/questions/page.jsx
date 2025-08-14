@@ -27,8 +27,10 @@ export default async function EventQuestionsPage ({ params }) {
           <input type="hidden" name="schema" id="schema_json" />
           <div className="flex gap-2 mt-6">
             <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" type="submit">Save</button>
-            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" formAction={loadStarter.bind(null, event.id)} type="submit">Load Starter Template</button>
           </div>
+        </form>
+        <form action={loadStarter.bind(null, event.id)} className="mt-4">
+          <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition w-full" type="submit">Load Starter Template</button>
         </form>
       </div>
     </div>
