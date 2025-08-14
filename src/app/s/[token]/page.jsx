@@ -27,106 +27,102 @@ export default function SignInPage ({ params }) {
   }
 
   if (done) return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
-          <div className="card shadow-sm"><div className="card-body text-center">
-            <h1 className="h4 mb-3">Thank you for signing in!</h1>
-            {event && <p>We appreciate your visit to <strong>{event.title}</strong>{event.address && <> at {event.address}</>}.</p>}
-            <p>You can close this page.</p>
-          </div></div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-lg">
+        <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Thank you for signing in!</h1>
+          {event && <p className="mb-2">We appreciate your visit to <strong>{event.title}</strong>{event.address && <> at {event.address}</>}.</p>}
+          <p className="text-gray-500">You can close this page.</p>
         </div>
       </div>
     </div>
   )
 
   return (
-    <div className="container py-4">
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
-          <div className="card shadow-sm"><div className="card-body">
-            {event && <>
-              <h1 className="h4 mb-1">{event.title}</h1>
-              {event.address && <p className="text-muted mb-3">{event.address}</p>}
-            </>}
-            <h2 className="h5 mb-3">Sign In</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={submit}>
-              <div className="mb-3">
-                <label className="form-label">Name *</label>
-                <input name="name" className="form-control" required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email *</label>
-                <input type="email" name="email" className="form-control" required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Phone *</label>
-                <input name="phone" className="form-control" required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Budget (optional)</label>
-                <input name="budget" className="form-control" placeholder="$600,000" />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Buying timeline (optional)</label>
-                <select name="timeline" className="form-select">
-                  <option value="">Select...</option>
-                  <option>0-1 months</option>
-                  <option>1-3 months</option>
-                  <option>3-6 months</option>
-                  <option>6+ months</option>
-                </select>
-              </div>
-              <div className="mb-3 form-check">
-                <input type="checkbox" className="form-check-input" id="pre" name="preapproved" value="1" />
-                <label className="form-check-label" htmlFor="pre">I am pre-approved</label>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Preferred neighborhoods (optional)</label>
-                <input name="neighborhoods" className="form-control" placeholder="e.g., Downtown, Lakeview" />
-              </div>
-              {event?.formSchema?.length ? (
-                <>
-                  <h3 className="h6 text-uppercase text-muted mt-4">Additional Questions</h3>
-                  {event.formSchema.map((f, i) => (
-                    <div className="mb-3" key={i}>
-                      {f.type !== 'checkbox' && (
-                        <label className="form-label">{f.label || f.name}{f.required ? ' *' : ''}</label>
-                      )}
-                      {f.type === 'select' ? (
-                        <select name={f.name} className="form-select" required={!!f.required}>
-                          <option value="">Select...</option>
-                          {(f.options || []).map((opt, idx) => (
-                            <option key={idx} value={opt.value ?? opt}>{opt.label ?? opt}</option>
-                          ))}
-                        </select>
-                      ) : f.type === 'checkbox' ? (
-                        <div className="form-check">
-                          <input type="checkbox" className="form-check-input" id={`q_${i}`} name={f.name} value="1" />
-                          <label className="form-check-label" htmlFor={`q_${i}`}>{f.label || f.name}</label>
-                        </div>
-                      ) : (
-                        <input
-                          type={f.type || 'text'}
-                          name={f.name}
-                          className="form-control"
-                          required={!!f.required}
-                          placeholder={f.placeholder || ''}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </>
-              ) : null}
-              <div className="mb-3 form-check">
-                <input type="checkbox" className="form-check-input" id="consent" name="consent" value="1" required />
-                <label className="form-check-label" htmlFor="consent">I consent to be contacted about this property and related listings.</label>
-              </div>
-              <button className="btn btn-primary w-100" type="submit">Submit</button>
-            </form>
-            <p className="text-muted small mt-3">Your information is stored securely and will not be shared without your consent.</p>
-          </div></div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-lg">
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          {event && <>
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">{event.title}</h1>
+            {event.address && <p className="text-gray-500 mb-3">{event.address}</p>}
+          </>}
+          <h2 className="text-lg font-semibold text-blue-700 mb-4">Sign In</h2>
+          {error && <div className="bg-red-100 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-center">{error}</div>}
+          <form onSubmit={submit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+              <input name="name" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+              <input type="email" name="email" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+              <input name="phone" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Budget (optional)</label>
+              <input name="budget" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="$600,000" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Buying timeline (optional)</label>
+              <select name="timeline" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Select...</option>
+                <option>0-1 months</option>
+                <option>1-3 months</option>
+                <option>3-6 months</option>
+                <option>6+ months</option>
+              </select>
+            </div>
+            <div className="flex items-center">
+              <input type="checkbox" className="rounded mr-2" id="pre" name="preapproved" value="1" />
+              <label className="text-sm text-gray-700" htmlFor="pre">I am pre-approved</label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred neighborhoods (optional)</label>
+              <input name="neighborhoods" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Downtown, Lakeview" />
+            </div>
+            {event?.formSchema?.length ? (
+              <>
+                <h3 className="text-sm font-semibold text-gray-500 mt-4 mb-2">Additional Questions</h3>
+                {event.formSchema.map((f, i) => (
+                  <div className="mb-3" key={i}>
+                    {f.type !== 'checkbox' && (
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{f.label || f.name}{f.required ? ' *' : ''}</label>
+                    )}
+                    {f.type === 'select' ? (
+                      <select name={f.name} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required={!!f.required}>
+                        <option value="">Select...</option>
+                        {(f.options || []).map((opt, idx) => (
+                          <option key={idx} value={opt.value ?? opt}>{opt.label ?? opt}</option>
+                        ))}
+                      </select>
+                    ) : f.type === 'checkbox' ? (
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" id={`q_${i}`} name={f.name} value="1" />
+                        <label className="text-sm text-gray-700" htmlFor={`q_${i}`}>{f.label || f.name}</label>
+                      </div>
+                    ) : (
+                      <input
+                        type={f.type || 'text'}
+                        name={f.name}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required={!!f.required}
+                        placeholder={f.placeholder || ''}
+                      />
+                    )}
+                  </div>
+                ))}
+              </>
+            ) : null}
+            <div className="flex items-center">
+              <input type="checkbox" className="rounded mr-2" id="consent" name="consent" value="1" required />
+              <label className="text-sm text-gray-700" htmlFor="consent">I consent to be contacted about this property and related listings.</label>
+            </div>
+            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" type="submit">Submit</button>
+          </form>
+          <p className="text-gray-500 text-xs mt-4">Your information is stored securely and will not be shared without your consent.</p>
         </div>
       </div>
     </div>

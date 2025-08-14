@@ -4,10 +4,10 @@ import { redirect } from 'next/navigation'
 import { getUserFromRequest } from '@/lib/auth'
 
 export default async function EventDetail ({ params }) {
-  const user = getUserFromRequest()
+  const user = await getUserFromRequest()
   if (!user) redirect('/dashboard/login')
   const event = await get('SELECT * FROM events WHERE id = ? AND created_by = ?', [params.id, user.id])
-  if (!event) return <div className="container py-4">Not found</div>
+  if (!event) return <div className="max-w-3xl mx-auto px-4 py-8 text-center text-gray-500">Not found</div>
   const rows = await all(
     `SELECT s.*, v.name, v.email, v.phone, v.preapproved, v.timeline
      FROM signins s JOIN visitors v ON s.visitor_id = v.id
@@ -20,64 +20,62 @@ export default async function EventDetail ({ params }) {
   const qrPngHref = base ? `${base}/api/qr/${event.qr_token}/png` : `/api/qr/${event.qr_token}/png`
   const qrPdfHref = base ? `${base}/api/qr/${event.qr_token}/pdf` : `/api/qr/${event.qr_token}/pdf`
   return (
-    <div className="container py-4" style={{maxWidth:960}}>
-      <div className="d-flex justify-content-between align-items-center mb-3">
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div>
-          <h1 className="h4 m-0">{event.title}</h1>
-          {event.address && <div className="text-muted">{event.address}</div>}
+          <h1 className="text-2xl font-bold text-gray-800">{event.title}</h1>
+          {event.address && <div className="text-gray-500">{event.address}</div>}
         </div>
-        <div className="d-flex gap-2">
-          <a className="btn btn-outline-secondary" href={qrPngHref} target="_blank">QR PNG</a>
-          <a className="btn btn-outline-secondary" href={qrPdfHref} target="_blank">QR PDF</a>
-          <a className="btn btn-primary" href={signInHref} target="_blank">Open Sign-In</a>
-          <a className="btn btn-outline-primary" href={`/dashboard/events/${event.id}/questions`}>Customize Questions</a>
+        <div className="flex flex-wrap gap-2">
+          <a className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" href={qrPngHref} target="_blank">QR PNG</a>
+          <a className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" href={qrPdfHref} target="_blank">QR PDF</a>
+          <a className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" href={signInHref} target="_blank">Open Sign-In</a>
+          <a className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 px-4 rounded-lg shadow transition" href={`/dashboard/events/${event.id}/questions`}>Customize Questions</a>
         </div>
       </div>
-      <div className="card">
-        <div className="card-body">
-          <h2 className="h6 text-uppercase text-muted">Visitors</h2>
-          {!rows.length ? (
-            <div className="alert alert-info mb-0">No visitors yet.</div>
-          ) : (
-            <div className="table-responsive">
-              <table className="table align-middle">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Pre-approved</th>
-                    <th>Timeline</th>
-                    <th>Score</th>
-                    <th>Signed At</th>
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">Visitors</h2>
+        {!rows.length ? (
+          <div className="bg-blue-50 border border-blue-200 text-blue-700 rounded-lg p-4 mb-0 text-center">No visitors yet.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pre-approved</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Timeline</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Signed At</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {rows.map(s => (
+                  <tr key={s.id}>
+                    <td className="px-4 py-2 whitespace-nowrap">{s.name}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">{s.email}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">{s.phone}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">{s.preapproved ? 'Yes' : 'No'}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">{s.timeline || '-'}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      {s.score >= 30 ? (
+                        <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold">Hot {s.score}</span>
+                      ) : s.score >= 15 ? (
+                        <span className="inline-block bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">Warm {s.score}</span>
+                      ) : (
+                        <span className="inline-block bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">Cold {s.score}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 whitespace-nowrap">{new Date(s.created_at).toLocaleString()}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {rows.map(s => (
-                    <tr key={s.id}>
-                      <td>{s.name}</td>
-                      <td>{s.email}</td>
-                      <td>{s.phone}</td>
-                      <td>{s.preapproved ? 'Yes' : 'No'}</td>
-                      <td>{s.timeline || '-'}</td>
-                      <td>
-                        {s.score >= 30 ? (
-                          <span className="badge bg-danger">Hot {s.score}</span>
-                        ) : s.score >= 15 ? (
-                          <span className="badge bg-warning text-dark">Warm {s.score}</span>
-                        ) : (
-                          <span className="badge bg-secondary">Cold {s.score}</span>
-                        )}
-                      </td>
-                      <td>{new Date(s.created_at).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         </div>
       </div>
-    </div>
   )
 }

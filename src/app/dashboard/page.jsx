@@ -12,20 +12,24 @@ export default async function DashboardPage () {
   const events = await all('SELECT * FROM events WHERE created_by = ? ORDER BY created_at DESC', [user.id])
 
   return (
-    <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1 className="h4 m-0">Your Open Houses</h1>
-        <Link className="btn btn-primary" href="/dashboard/events/new">Create Event</Link>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Your Open Houses</h1>
+        <Link className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" href="/dashboard/events/new">Create Event</Link>
       </div>
-      {!events.length && <div className="alert alert-info">No events yet. Create your first open house.</div>}
-      <div className="row g-3">
+      {!events.length && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 rounded-lg p-4 mb-6 text-center">
+          No events yet. Create your first open house.
+        </div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {events.map(e => (
-          <div className="col-md-6" key={e.id}>
-            <div className="card h-100">
-              <div className="card-body">
-                <h2 className="h5"><Link href={`/dashboard/events/${e.id}`}>{e.title}</Link></h2>
-                {e.address && <div className="text-muted">{e.address}</div>}
-              </div>
+          <div key={e.id} className="bg-white rounded-xl shadow hover:shadow-lg transition h-full flex flex-col justify-between">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-blue-700 mb-2">
+                <Link href={`/dashboard/events/${e.id}`}>{e.title}</Link>
+              </h2>
+              {e.address && <div className="text-gray-500 text-sm">{e.address}</div>}
             </div>
           </div>
         ))}

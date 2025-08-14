@@ -8,22 +8,22 @@ export default function NewEventPage () {
   console.log(user)
   if (!user) redirect('/dashboard/login')
   return (
-    <div className="container py-4" style={{maxWidth:720}}>
-      <h1 className="h4 mb-3">Create Open House</h1>
-      <form action={createEvent}>
-        <div className="mb-3">
-          <label className="form-label">Title *</label>
-          <input className="form-control" name="title" required />
+    <div className="max-w-xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Create Open House</h1>
+      <form action={createEvent} className="bg-white rounded-xl shadow p-6 space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+          <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" name="title" required />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Address</label>
-          <input className="form-control" name="address" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+          <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" name="address" />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Starts At</label>
-          <input className="form-control" type="datetime-local" name="startsAt" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Starts At</label>
+          <input className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" type="datetime-local" name="startsAt" />
         </div>
-        <button className="btn btn-primary">Create</button>
+        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Create</button>
       </form>
     </div>
   )

@@ -8,30 +8,28 @@ export const dynamic = 'force-dynamic'
 
 export default async function EventQuestionsPage ({ params }) {
   await ensureDb()
-  const user = getUserFromRequest()
+  const user = await getUserFromRequest()
   if (!user) redirect('/dashboard/login')
   // Ensure the event belongs to this user
   const event = await get('SELECT * FROM events WHERE id = ? AND created_by = ?', [params.id, user.id])
-  if (!event) return <div className="container py-4">Not found</div>
+  if (!event) return <div className="max-w-3xl mx-auto px-4 py-8 text-center text-gray-500">Not found</div>
   const schema = event.form_schema ? JSON.parse(event.form_schema) : []
 
   return (
-    <div className="container py-4" style={{maxWidth: 960}}>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1 className="h4 m-0">Customize Sign-In Questions</h1>
-        <Link className="btn btn-outline-secondary" href={`/dashboard/events/${event.id}`}>Back to Event</Link>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Customize Sign-In Questions</h1>
+        <Link className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" href={`/dashboard/events/${event.id}`}>Back to Event</Link>
       </div>
-      <div className="card">
-        <div className="card-body">
-          <form action={saveSchema.bind(null, event.id)}>
-            <Builder initialSchema={schema} />
-            <input type="hidden" name="schema" id="schema_json" />
-            <div className="d-flex gap-2 mt-3">
-              <button className="btn btn-primary" type="submit">Save</button>
-              <button className="btn btn-outline-secondary" formAction={loadStarter.bind(null, event.id)} type="submit">Load Starter Template</button>
-            </div>
-          </form>
-        </div>
+      <div className="bg-white rounded-xl shadow p-6">
+        <form action={saveSchema.bind(null, event.id)}>
+          <Builder initialSchema={schema} />
+          <input type="hidden" name="schema" id="schema_json" />
+          <div className="flex gap-2 mt-6">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition" type="submit">Save</button>
+            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow transition" formAction={loadStarter.bind(null, event.id)} type="submit">Load Starter Template</button>
+          </div>
+        </form>
       </div>
     </div>
   )
@@ -39,7 +37,7 @@ export default async function EventQuestionsPage ({ params }) {
 
 async function saveSchema (eventId, formData) {
   'use server'
-  const user = getUserFromRequest()
+  const user = await getUserFromRequest()
   if (!user) redirect('/dashboard/login')
   await ensureDb()
   const schemaText = formData.get('schema') || '[]'
@@ -57,7 +55,7 @@ async function saveSchema (eventId, formData) {
 
 async function loadStarter (eventId, _formData) {
   'use server'
-  const user = getUserFromRequest()
+  const user = await getUserFromRequest()
   if (!user) redirect('/dashboard/login')
   await ensureDb()
   const starter = [
