@@ -1,5 +1,5 @@
 "use client"
-import './globals.css'
+import '../globals.css'
 
 // export const metadata = {
 //   title: 'Visitor Register',
@@ -68,6 +68,24 @@ export default function RootLayout ({ children }) {
       setIsLoggedIn(!!token);
     }
   }, []);
+  // Only allow unauthenticated access to /s/[token]/page
+  const isSTokenPage = currentPath.startsWith('/s/') && /\/s\/[^/]+$/.test(currentPath);
+
+  if (!isLoggedIn && !isSTokenPage) {
+    return (
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 flex items-center justify-center min-h-screen">
+          <DarkModeToggle />
+          <div className="max-w-md mx-auto p-8 bg-white dark:bg-gray-950 rounded-lg shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Login Required</h2>
+            <p className="mb-6">You must be logged in to view this page.</p>
+            <a href="/login" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">Go to Login</a>
+          </div>
+        </body>
+      </html>
+    );
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -104,5 +122,5 @@ export default function RootLayout ({ children }) {
         {children}
       </body>
     </html>
-  )
+  );
 }

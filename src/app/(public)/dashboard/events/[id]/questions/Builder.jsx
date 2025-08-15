@@ -34,39 +34,25 @@ export default function Builder({ initialSchema }) {
   }
 
   const addField = (tpl) => {
-  const base = { ...tpl }
-  base.name = uniqueName(fields, base.name)
-  setFields(prev => [...prev, base])
-  setSelectedIdx(fields.length)
+    const base = { ...tpl }
+    base.name = uniqueName(fields, base.name)
+    setFields(prev => [...prev, base])
+    setSelectedIdx(fields.length)
   }
 
   const removeField = (idx) => {
-    setFields(prev => {
-      const newFields = prev.filter((_, i) => i !== idx)
-      // If the removed field was selected, select the next one, or previous, or null
-      if (selectedIdx === idx) {
-        if (newFields.length === 0) {
-          setSelectedIdx(null)
-        } else if (idx < newFields.length) {
-          setSelectedIdx(idx)
-        } else {
-          setSelectedIdx(newFields.length - 1)
-        }
-      } else if (selectedIdx > idx) {
-        setSelectedIdx(selectedIdx - 1)
-      }
-      return newFields
-    })
+    setFields(prev => prev.filter((_, i) => i !== idx))
+    setSelectedIdx(0)
   }
 
   const move = (idx, dir) => {
-  const to = idx + dir
-  if (to < 0 || to >= fields.length) return
-  const next = fields.slice()
-  const [item] = next.splice(idx, 1)
-  next.splice(to, 0, item)
-  setFields(next)
-  setSelectedIdx(to)
+    const to = idx + dir
+    if (to < 0 || to >= fields.length) return
+    const next = fields.slice()
+    const [item] = next.splice(idx, 1)
+    next.splice(to, 0, item)
+    setFields(next)
+    setSelectedIdx(to)
   }
 
   const updateSelected = (patch) => {
@@ -81,8 +67,6 @@ export default function Builder({ initialSchema }) {
 
   return (
     <>
-     
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Field Types */}
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 h-full shadow">

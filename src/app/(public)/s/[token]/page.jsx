@@ -7,6 +7,7 @@ export default function SignInPage ({ params }) {
   const [event, setEvent] = useState(null)
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
+  const [countdown, setCountdown] = useState(3)
 
   useEffect(() => {
     // Fetch minimal event info
@@ -26,13 +27,23 @@ export default function SignInPage ({ params }) {
     else setError('Please fill required fields')
   }
 
+  useEffect(() => {
+    if (!done) return;
+    if (countdown === 0) {
+      window.location.href = `/s/${params.token}`;
+      return;
+    }
+    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [done, countdown, params.token]);
+
   if (done) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-lg">
         <div className="bg-white rounded-xl shadow-lg p-8 text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Thank you for signing in!</h1>
           {event && <p className="mb-2">We appreciate your visit to <strong>{event.title}</strong>{event.address && <> at {event.address}</>}.</p>}
-          <p className="text-gray-500">You can close this page.</p>
+          <p className="text-gray-500 mb-2">Redirecting to event page in <span className="font-semibold">{countdown}</span> seconds...</p>
         </div>
       </div>
     </div>
@@ -46,7 +57,6 @@ export default function SignInPage ({ params }) {
             <h1 className="text-2xl font-bold text-gray-800 mb-1">{event.title}</h1>
             {event.address && <p className="text-gray-500 mb-3">{event.address}</p>}
           </>}
-          <h2 className="text-lg font-semibold text-blue-700 mb-4">Sign In</h2>
           {error && <div className="bg-red-100 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-center">{error}</div>}
           <form onSubmit={submit} className="space-y-5">
             <div>
